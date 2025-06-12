@@ -3,6 +3,7 @@ package main
 import (
     "log"
     "net/http"
+    "go-backend-app/internal/service"
 
     "go-backend-app/internal/handler"
 )
