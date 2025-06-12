@@ -8,7 +8,8 @@ import (
 )
 
 func main() {
-    h := handler.NewHandler()
+    svc := service.NewService()
+    h := handler.NewHandler(svc)
 
     http.HandleFunc("/items", h.GetItems)
     http.HandleFunc("/items/create", h.CreateItem)
