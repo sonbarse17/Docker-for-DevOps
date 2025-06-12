@@ -1,0 +1,5 @@
+# app/helpers/application_helper.rb
+
+module ApplicationHelper
+  # This module can contain methods that assist in rendering views.
+end

@@ -1,0 +1,88 @@
+- docker architecture 
+  - docker engine - 
+  - docker daemon (dockerd) - containerd
+  - docker cli
+  - docker client
+
+- docker architecture is a client-server architecture that consists of several components that work together to manage containers. The main components are:
+- **Docker Engine**: The core component that runs on the host machine and manages containers.
+- **Docker Daemon (dockerd)**: The background service that manages Docker containers, images, networks, and volumes. It listens for API requests and handles container lifecycle operations.  
+- **Containerd**: An industry-standard core container runtime that manages the complete container lifecycle, including image transfer, container execution, and supervision.
+- **Docker CLI**: The command-line interface that allows users to interact with the Docker daemon and manage containers, images, and networks.
+- **Docker Client**: The user interface that communicates with the Docker daemon to execute commands and manage containers.
+
+- docker background Workflow
+  - docker client sends commands to the docker daemon
+  - docker daemon processes the commands and interacts with containerd
+  - containerd manages the container lifecycle, including image management and execution
+  - docker daemon returns the results to the docker client
+
+- docker : docker is an open source platform that enables developers to package applications along with all their dependencies into containers. 
+- containers: a container is a lightweight, standalone and executable package that contains everything needed to run an application
+- images: containers are created from images which are templates that includs the application code , libraries, dependencies.
+- dockerfile: a dockerfile is a text file that contains instructions for building a docker image. It defines the base image, application code, dependencies, and configuration.
+- docker engine: the core of docker which creates and mangage containers on the host operating syatem 
+- docker HUB: a cloud-based repository where developers can share and pull prebuilt container images. 
+
+- Docker Workflow:
+  - Write a Dockerfile: Define the base image, application code, dependencies, and configuration.
+  - Build the Docker image: Use the `docker build` command to create an image from the Dockerfile.
+  - Run a container: Use the `docker run` command to create and start a container from the built image.
+  - Share the image: Push the image to Docker Hub or another registry for others to use.
+  - Pull an image: Use the `docker pull` command to download an image from a registry.
+
+- docker networks: 
+  - types of networks:
+    - bridge network: the default network type that allows containers to communicate with each other on the same host.
+    - host network: shares the host's network stack, allowing containers to use the host's IP address and ports.
+    - overlay network: allows containers running on different hosts to communicate with each other, useful for multi-host deployments.
+    - macvlan network: assigns a unique MAC address to each container, allowing it to appear as a physical device on the network.
+
+- docker volumes:
+  - types of volumes:
+    - local volumes: stored on the host machine, allowing data to persist even if the container is removed.
+    - named volumes: managed by Docker, providing a way to share data between containers.
+    - bind mounts: link a specific directory on the host to a directory in the container, allowing direct access to host files.
+  - use cases:
+    - persisting data across container restarts
+    - sharing data between containers
+    - managing configuration files and application data
+
+- dockerfile contains:
+  - FROM :the base image to use for the container
+  - RUN : commands to run during the image build process
+  - COPY : copy files from the host to the container
+  - ADD : similar to COPY, but can also extract tar files and download files from URLs
+  - CMD : the default command to run when the container starts
+  - ENTRYPOINT : the command that will always run when the container starts, allowing for more control over how the container behaves
+  - ENV : set environment variables in the container
+  - EXPOSE : specify the ports that the container will listen on
+  - VOLUME : create a mount point for a volume, allowing data to persist outside the container
+  - WORKDIR : set the working directory for subsequent commands in the Dockerfile
+  - USER : specify the user to run the container as
+  - ARG : define build-time variables that can be passed to the Dockerfile
+
+- dockerfile for nodejs application:
+  ```dockerfile
+  # Use the official Node.js image as the base image
+  FROM node:14
+
+  # Set the working directory in the container
+  WORKDIR /usr/src/app
+
+  # Copy package.json and package-lock.json to the working directory
+  COPY package*.json ./
+
+  # Install dependencies
+  RUN npm install
+
+  # Copy the rest of the application code to the working directory
+  COPY . .
+
+  # Expose the port that the application will run on
+  EXPOSE 3000
+
+  # Define the command to run the application
+  CMD ["node", "app.js"]
+  ```
+

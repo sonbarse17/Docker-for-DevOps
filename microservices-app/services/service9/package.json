@@ -1,0 +1,21 @@
+{
+  "name": "service9",
+  "version": "1.0.0",
+  "description": "Microservice 9 for the microservices application, connecting to Redis.",
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "ts-node src/index.ts",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "redis": "^3.1.2",
+    "typescript": "^4.5.2"
+  },
+  "devDependencies": {
+    "ts-node": "^10.0.0",
+    "typescript": "^4.5.2"
+  },
+  "author": "Your Name",
+  "license": "MIT"
+}

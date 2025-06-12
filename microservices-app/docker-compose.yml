@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - service1
+      - service2
+      - service3
+      - service4
+      - service5
+      - service6
+      - service7
+      - service8
+      - service9
+      - service10
+
+  service1:
+    build:
+      context: ./services/service1
+      dockerfile: Dockerfile
+    ports:
+      - "5001:5000"
+    environment:
+      - REDIS_HOST=redis
+
+  service2:
+    build:
+      context: ./services/service2
+      dockerfile: Dockerfile
+    ports:
+      - "5002:5000"
+    environment:
+      - REDIS_HOST=redis
+
+  service3:
+    build:
+      context: ./services/service3
+      dockerfile: Dockerfile
+    ports:
+      - "5003:5000"
+    environment:
+      - REDIS_HOST=redis
+
+  service4:
+    build:
+      context: ./services/service4
+      dockerfile: Dockerfile
+    ports:
+      - "5004:5000"
+    environment:
+      - REDIS_HOST=redis
+
+  service5:
+    build:
+      context: ./services/service5
+      dockerfile: Dockerfile
+    ports:
+      - "5005:5000"
+    environment:
+      - REDIS_HOST=redis
+
+  service6:
+    build:
+      context: ./services/service6
+      dockerfile: Dockerfile
+    ports:
+      - "5006:5000"
+    environment:
+      - REDIS_HOST=redis
+
+  service7:
+    build:
+      context: ./services/service7
+      dockerfile: Dockerfile
+    ports:
+      - "5007:5000"
+    environment:
+      - REDIS_HOST=redis
+
+  service8:
+    build:
+      context: ./services/service8
+      dockerfile: Dockerfile
+    ports:
+      - "5008:5000"
+    environment:
+      - REDIS_HOST=redis
+
+  service9:
+    build:
+      context: ./services/service9
+      dockerfile: Dockerfile
+    ports:
+      - "5009:5000"
+    environment:
+      - REDIS_HOST=redis
+
+  service10:
+    build:
+      context: ./services/service10
+      dockerfile: Dockerfile
+    ports:
+      - "5010:5000"
+    environment:
+      - REDIS_HOST=redis
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+
+networks:
+  default:
+    driver: bridge
+
+volumes:
+  redis_data:
+    driver: local
