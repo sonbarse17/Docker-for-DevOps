@@ -1,38 +1,46 @@
 package handler
 
 import (
-	"encoding/json"
-	"net/http"
-	"go-backend-app/internal/service"
+    "encoding/json"
+    "net/http"
 )
 
 type Handler struct {
-	service *service.Service
+    // Add service dependency if needed
 }
 
-func NewHandler(s *service.Service) *Handler {
-	return &Handler{service: s}
+func NewHandler() *Handler {
+    return &Handler{}
 }
 
 func (h *Handler) GetItems(w http.ResponseWriter, r *http.Request) {
-	items, err := h.service.FetchItems()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(items)
+    if r.Method != http.MethodGet {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+    
+    // Add your get items logic here
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(map[string]interface{}{
+        "items": []string{}, // Replace with actual items
+    })
 }
 
 func (h *Handler) CreateItem(w http.ResponseWriter, r *http.Request) {
-	var item service.Item
-	if err := json.NewDecoder(r.Body).Decode(&item); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-	if err := h.service.AddItem(item); err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	w.WriteHeader(http.StatusCreated)
+    if r.Method != http.MethodPost {
+        http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+        return
+    }
+
+    var item map[string]interface{}
+    if err := json.NewDecoder(r.Body).Decode(&item); err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+    defer r.Body.Close()
+
+    // Add your create item logic here
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(http.StatusCreated)
+    json.NewEncoder(w).Encode(item)
 }
