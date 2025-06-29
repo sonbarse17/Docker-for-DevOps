@@ -1,19 +1,21 @@
 {
-    "esnext": true,
+    "esversion": 6,
+    "browser": true,
     "indent": 2,
-    "maxlen": 80,
+    "maxlen": 100,
     "freeze": true,
     "camelcase": true,
     "unused": true,
-    "eqnull": true,
-    "proto": true,
-    "supernew": true,
-    "noyield": true,
-    "evil": true,
-    "node": true,
-    "boss": true,
-    "expr": true,
-    "loopfunc": true,
-    "white": true,
-    "maxdepth": 4
+    "undef": true,
+    "strict": false,
+    "maxdepth": 4,
+    "maxcomplexity": 10,
+    "globals": {
+        "GAME_CONFIG": false,
+        "DIRECTIONS": false,
+        "DIRECTION_VECTORS": false,
+        "KEY_MAPPINGS": false,
+        "STORAGE_KEYS": false,
+        "CSS_CLASSES": false
+    }
 }

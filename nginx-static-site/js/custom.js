@@ -1,31 +1,68 @@
+(function ($) {
+  'use strict';
 
-  (function ($) {
-  
-  "use strict";
+  const LittleFashion = {
+    // Configuration
+    config: {
+      preloaderDelay: 500,
+      slideshow: {
+        autoplay: true,
+        infinite: true,
+        arrows: false,
+        fade: true,
+        dots: true,
+        autoplaySpeed: 3000
+      },
+      testimonial: {
+        arrows: false,
+        dots: true,
+        slidesToShow: 1,
+        slidesToScroll: 1
+      }
+    },
 
-    // PRE LOADER
-    $(window).load(function(){
-      $('.preloader').delay(500).slideUp('slow'); // set duration in brackets    
-    });
+    // Initialize preloader
+    initPreloader() {
+      $(window).on('load', () => {
+        $('.preloader').delay(this.config.preloaderDelay).slideUp('slow');
+      });
+    },
 
-    // NAVBAR
-    $(".navbar").headroom();
+    // Initialize navigation
+    initNavigation() {
+      $('.navbar').headroom();
+      
+      $('.navbar-collapse a').on('click', function() {
+        $('.navbar-collapse').collapse('hide');
+      });
+    },
 
-    $('.navbar-collapse a').click(function(){
-        $(".navbar-collapse").collapse('hide');
-    });
+    // Initialize sliders
+    initSliders() {
+      const $slideshow = $('.slick-slideshow');
+      const $testimonial = $('.slick-testimonial');
 
-    $('.slick-slideshow').slick({
-      autoplay: true,
-      infinite: true,
-      arrows: false,
-      fade: true,
-      dots: true,
-    });
+      if ($slideshow.length) {
+        $slideshow.slick(this.config.slideshow);
+      }
 
-    $('.slick-testimonial').slick({
-      arrows: false,
-      dots: true,
-    });
-    
-  })(window.jQuery);
+      if ($testimonial.length) {
+        $testimonial.slick(this.config.testimonial);
+      }
+    },
+
+    // Initialize all components
+    init() {
+      this.initPreloader();
+      this.initNavigation();
+      this.initSliders();
+    }
+  };
+
+  // Initialize when DOM is ready
+  $(document).ready(() => {
+    LittleFashion.init();
+  });
+
+})(window.jQuery);
+

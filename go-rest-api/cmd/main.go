@@ -1,68 +1,88 @@
 package main
 
 import (
-    "context"
-    "log"
-    "net/http"
-    "os"
-    "os/signal"
-    "syscall"
-    "time"
-
-    "go-backend-app/internal/handler"
+	"context"
+	"go-backend-app/internal/config"
+	"go-backend-app/internal/handler"
+	"go-backend-app/internal/middleware"
+	"go-backend-app/internal/service"
+	"log/slog"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
 )
 
 func main() {
-    h := handler.NewHandler()
-    
-    mux := http.NewServeMux()
-    mux.HandleFunc("/", h.ServeUI)
-    mux.HandleFunc("/items", h.GetItems)
-    mux.HandleFunc("/items/create", h.CreateItem)
+	cfg := config.Load()
+	svc := service.NewService()
+	h := handler.NewHandler(svc)
 
-    server := &http.Server{
-        Addr:         ":8080",
-        Handler:      mux,
-        ReadTimeout:  10 * time.Second,
-        WriteTimeout: 10 * time.Second,
-    }
+	mux := http.NewServeMux()
 
-    // Server run context
-    serverCtx, serverStopCtx := context.WithCancel(context.Background())
+	// UI routes
+	mux.HandleFunc("/", h.ServeUI)
 
-    // Listen for syscall signals for process to interrupt/quit
-    sig := make(chan os.Signal, 1)
-    signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
+	// API routes with proper HTTP methods
+	mux.HandleFunc("GET /api/items", h.GetItems)
+	mux.HandleFunc("POST /api/items", h.CreateItem)
+	mux.HandleFunc("GET /health", h.HealthCheck)
 
-    go func() {
-        <-sig
+	// Apply middleware
+	handlerWithMiddleware := middleware.Logger(
+		middleware.Recovery(
+			middleware.CORS(mux),
+		),
+	)
 
-        // Shutdown signal with grace period of 30 seconds
-        shutdownCtx, _ := context.WithTimeout(serverCtx, 30*time.Second)
+	server := &http.Server{
+		Addr:         ":" + cfg.Port,
+		Handler:      handlerWithMiddleware,
+		ReadTimeout:  cfg.ReadTimeout,
+		WriteTimeout: cfg.WriteTimeout,
+	}
 
-        go func() {
-            <-shutdownCtx.Done()
-            if shutdownCtx.Err() == context.DeadlineExceeded {
-                log.Fatal("graceful shutdown timed out.. forcing exit.")
-            }
-        }()
+	// Server run context
+	serverCtx, serverStopCtx := context.WithCancel(context.Background())
 
-        // Trigger graceful shutdown
-        err := server.Shutdown(shutdownCtx)
-        if err != nil {
-            log.Fatal(err)
-        }
-        serverStopCtx()
-    }()
+	// Listen for syscall signals for process to interrupt/quit
+	sig := make(chan os.Signal, 1)
+	signal.Notify(sig, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
 
-    // Run the server
-    log.Println("Starting server on :8080")
-    err := server.ListenAndServe()
-    if err != nil && err != http.ErrServerClosed {
-        log.Fatal(err)
-    }
+	go func() {
+		<-sig
+		slog.Info("shutdown signal received")
 
-    // Wait for server context to be stopped
-    <-serverCtx.Done()
-    log.Println("Server stopped gracefully")
+		// Shutdown signal with grace period of 30 seconds
+		shutdownCtx, cancel := context.WithTimeout(serverCtx, 30*time.Second)
+		defer cancel()
+
+		go func() {
+			<-shutdownCtx.Done()
+			if shutdownCtx.Err() == context.DeadlineExceeded {
+				slog.Error("graceful shutdown timed out.. forcing exit.")
+				os.Exit(1)
+			}
+		}()
+
+		// Trigger graceful shutdown
+		if err := server.Shutdown(shutdownCtx); err != nil {
+			slog.Error("server shutdown failed", "error", err)
+			os.Exit(1)
+		}
+		serverStopCtx()
+	}()
+
+	// Run the server
+	slog.Info("starting server", "port", cfg.Port)
+	err := server.ListenAndServe()
+	if err != nil && err != http.ErrServerClosed {
+		slog.Error("server failed to start", "error", err)
+		os.Exit(1)
+	}
+
+	// Wait for server context to be stopped
+	<-serverCtx.Done()
+	slog.Info("server stopped gracefully")
 }

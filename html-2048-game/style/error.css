@@ -1,0 +1,20 @@
+/* Error message styling */
+.error-message {
+  background: #f2dede;
+  border: 1px solid #ebccd1;
+  color: #a94442;
+  padding: 15px;
+  margin: 20px 0;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+@media screen and (max-width: 520px) {
+  .error-message {
+    font-size: 16px;
+    padding: 12px;
+    margin: 15px 0;
+  }
+}

@@ -1,0 +1,10 @@
+README.md
+Dockerfile
+.dockerignore
+.git
+.gitignore
+node_modules
+npm-debug.log
+*.md
+.DS_Store
+Thumbs.db

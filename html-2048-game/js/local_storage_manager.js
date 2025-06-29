@@ -1,40 +1,39 @@
+// Fallback storage for environments without localStorage
 window.fakeStorage = {
   _data: {},
 
-  setItem: function (id, val) {
-    return this._data[id] = String(val);
+  setItem(id, val) {
+    this._data[id] = String(val);
   },
 
-  getItem: function (id) {
-    return this._data.hasOwnProperty(id) ? this._data[id] : undefined;
+  getItem(id) {
+    return Object.prototype.hasOwnProperty.call(this._data, id) ? this._data[id] : null;
   },
 
-  removeItem: function (id) {
-    return delete this._data[id];
+  removeItem(id) {
+    delete this._data[id];
   },
 
-  clear: function () {
-    return this._data = {};
+  clear() {
+    this._data = {};
   }
 };
 
 function LocalStorageManager() {
-  this.bestScoreKey     = "bestScore";
-  this.gameStateKey     = "gameState";
-
-  var supported = this.localStorageSupported();
-  this.storage = supported ? window.localStorage : window.fakeStorage;
+  this.bestScoreKey = STORAGE_KEYS.BEST_SCORE;
+  this.gameStateKey = STORAGE_KEYS.GAME_STATE;
+  this.storage = this.localStorageSupported() ? window.localStorage : window.fakeStorage;
 }
 
 LocalStorageManager.prototype.localStorageSupported = function () {
-  var testKey = "test";
-
+  const testKey = 'test';
   try {
-    var storage = window.localStorage;
-    storage.setItem(testKey, "1");
+    const storage = window.localStorage;
+    storage.setItem(testKey, '1');
     storage.removeItem(testKey);
     return true;
   } catch (error) {
+    console.warn('LocalStorage not supported, using fallback storage');
     return false;
   }
 };
@@ -50,12 +49,21 @@ LocalStorageManager.prototype.setBestScore = function (score) {
 
 // Game state getters/setters and clearing
 LocalStorageManager.prototype.getGameState = function () {
-  var stateJSON = this.storage.getItem(this.gameStateKey);
-  return stateJSON ? JSON.parse(stateJSON) : null;
+  try {
+    const stateJSON = this.storage.getItem(this.gameStateKey);
+    return stateJSON ? JSON.parse(stateJSON) : null;
+  } catch (error) {
+    console.error('Error parsing game state:', error);
+    return null;
+  }
 };
 
 LocalStorageManager.prototype.setGameState = function (gameState) {
-  this.storage.setItem(this.gameStateKey, JSON.stringify(gameState));
+  try {
+    this.storage.setItem(this.gameStateKey, JSON.stringify(gameState));
+  } catch (error) {
+    console.error('Error saving game state:', error);
+  }
 };
 
 LocalStorageManager.prototype.clearGameState = function () {

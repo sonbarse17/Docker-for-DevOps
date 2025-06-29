@@ -1,21 +1,49 @@
 package service
 
+import (
+	"fmt"
+	"go-backend-app/internal/models"
+	"sync"
+	"time"
+)
+
 type Service struct {
-    // Add any dependencies or configurations needed for the service
+	items map[string]models.Item
+	mu    sync.RWMutex
 }
 
-func (s *Service) FetchItems() ([]Item, error) {
-    // Implement the logic to fetch items from the data layer
-    return nil, nil
+func NewService() *Service {
+	return &Service{
+		items: make(map[string]models.Item),
+	}
 }
 
-func (s *Service) AddItem(item Item) error {
-    // Implement the logic to add an item to the data layer
-    return nil
+func (s *Service) GetItems() ([]models.Item, error) {
+	s.mu.RLock()
+	defer s.mu.RUnlock()
+
+	items := make([]models.Item, 0, len(s.items))
+	for _, item := range s.items {
+		items = append(items, item)
+	}
+	return items, nil
 }
 
-// Define the Item struct or any other necessary types here
-type Item struct {
-    ID   string `json:"id"`
-    Name string `json:"name"`
+func (s *Service) CreateItem(req models.CreateItemRequest) (models.Item, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	id := fmt.Sprintf("%d", time.Now().UnixNano())
+	item := models.Item{
+		ID:        id,
+		Name:      req.Name,
+		CreatedAt: time.Now(),
+	}
+
+	s.items[id] = item
+	return item, nil
+}
+
+func (s *Service) HealthCheck() error {
+	return nil
 }

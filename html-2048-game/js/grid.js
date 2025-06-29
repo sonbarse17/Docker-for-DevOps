@@ -1,35 +1,29 @@
 function Grid(size, previousState) {
-  this.size = size;
+  this.size = size || GAME_CONFIG.GRID_SIZE;
   this.cells = previousState ? this.fromState(previousState) : this.empty();
 }
 
 // Build a grid of the specified size
 Grid.prototype.empty = function () {
-  var cells = [];
-
-  for (var x = 0; x < this.size; x++) {
-    var row = cells[x] = [];
-
-    for (var y = 0; y < this.size; y++) {
+  const cells = [];
+  for (let x = 0; x < this.size; x++) {
+    const row = cells[x] = [];
+    for (let y = 0; y < this.size; y++) {
       row.push(null);
     }
   }
-
   return cells;
 };
 
 Grid.prototype.fromState = function (state) {
-  var cells = [];
-
-  for (var x = 0; x < this.size; x++) {
-    var row = cells[x] = [];
-
-    for (var y = 0; y < this.size; y++) {
-      var tile = state[x][y];
+  const cells = [];
+  for (let x = 0; x < this.size; x++) {
+    const row = cells[x] = [];
+    for (let y = 0; y < this.size; y++) {
+      const tile = state[x][y];
       row.push(tile ? new Tile(tile.position, tile.value) : null);
     }
   }
-
   return cells;
 };
 
@@ -43,21 +37,19 @@ Grid.prototype.randomAvailableCell = function () {
 };
 
 Grid.prototype.availableCells = function () {
-  var cells = [];
-
-  this.eachCell(function (x, y, tile) {
+  const cells = [];
+  this.eachCell((x, y, tile) => {
     if (!tile) {
-      cells.push({ x: x, y: y });
+      cells.push({ x, y });
     }
   });
-
   return cells;
 };
 
 // Call callback for every cell
 Grid.prototype.eachCell = function (callback) {
-  for (var x = 0; x < this.size; x++) {
-    for (var y = 0; y < this.size; y++) {
+  for (let x = 0; x < this.size; x++) {
+    for (let y = 0; y < this.size; y++) {
       callback(x, y, this.cells[x][y]);
     }
   }
@@ -100,16 +92,13 @@ Grid.prototype.withinBounds = function (position) {
 };
 
 Grid.prototype.serialize = function () {
-  var cellState = [];
-
-  for (var x = 0; x < this.size; x++) {
-    var row = cellState[x] = [];
-
-    for (var y = 0; y < this.size; y++) {
+  const cellState = [];
+  for (let x = 0; x < this.size; x++) {
+    const row = cellState[x] = [];
+    for (let y = 0; y < this.size; y++) {
       row.push(this.cells[x][y] ? this.cells[x][y].serialize() : null);
     }
   }
-
   return {
     size: this.size,
     cells: cellState

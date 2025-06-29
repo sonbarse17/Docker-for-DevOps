@@ -1,20 +1,25 @@
 function HTMLActuator() {
-  this.tileContainer    = document.querySelector(".tile-container");
-  this.scoreContainer   = document.querySelector(".score-container");
-  this.bestContainer    = document.querySelector(".best-container");
-  this.messageContainer = document.querySelector(".game-message");
-
+  this.tileContainer = document.querySelector('.tile-container');
+  this.scoreContainer = document.querySelector('.score-container');
+  this.bestContainer = document.querySelector('.best-container');
+  this.messageContainer = document.querySelector('.game-message');
   this.score = 0;
+
+  // Validate required DOM elements
+  if (!this.tileContainer || !this.scoreContainer || !this.bestContainer || !this.messageContainer) {
+    throw new Error('Required DOM elements not found');
+  }
 }
 
 HTMLActuator.prototype.actuate = function (grid, metadata) {
-  var self = this;
+  const self = this;
 
-  window.requestAnimationFrame(function () {
+  window.requestAnimationFrame(() => {
     self.clearContainer(self.tileContainer);
 
-    grid.cells.forEach(function (column) {
-      column.forEach(function (cell) {
+    // Render all tiles
+    grid.cells.forEach(column => {
+      column.forEach(cell => {
         if (cell) {
           self.addTile(cell);
         }
@@ -25,13 +30,8 @@ HTMLActuator.prototype.actuate = function (grid, metadata) {
     self.updateBestScore(metadata.bestScore);
 
     if (metadata.terminated) {
-      if (metadata.over) {
-        self.message(false); // You lose
-      } else if (metadata.won) {
-        self.message(true); // You win!
-      }
+      self.message(metadata.won);
     }
-
   });
 };
 
@@ -47,46 +47,43 @@ HTMLActuator.prototype.clearContainer = function (container) {
 };
 
 HTMLActuator.prototype.addTile = function (tile) {
-  var self = this;
+  const self = this;
+  const wrapper = document.createElement('div');
+  const inner = document.createElement('div');
+  const position = tile.previousPosition || { x: tile.x, y: tile.y };
+  
+  const classes = [
+    CSS_CLASSES.TILE,
+    `tile-${tile.value}`,
+    this.positionClass(position)
+  ];
 
-  var wrapper   = document.createElement("div");
-  var inner     = document.createElement("div");
-  var position  = tile.previousPosition || { x: tile.x, y: tile.y };
-  var positionClass = this.positionClass(position);
-
-  // We can't use classlist because it somehow glitches when replacing classes
-  var classes = ["tile", "tile-" + tile.value, positionClass];
-
-  if (tile.value > 2048) classes.push("tile-super");
+  if (tile.value > GAME_CONFIG.WIN_TILE) {
+    classes.push(CSS_CLASSES.TILE_SUPER);
+  }
 
   this.applyClasses(wrapper, classes);
-
-  inner.classList.add("tile-inner");
+  inner.classList.add(CSS_CLASSES.TILE_INNER);
   inner.textContent = tile.value;
 
   if (tile.previousPosition) {
-    // Make sure that the tile gets rendered in the previous position first
-    window.requestAnimationFrame(function () {
+    // Animate tile movement
+    window.requestAnimationFrame(() => {
       classes[2] = self.positionClass({ x: tile.x, y: tile.y });
-      self.applyClasses(wrapper, classes); // Update the position
+      self.applyClasses(wrapper, classes);
     });
   } else if (tile.mergedFrom) {
-    classes.push("tile-merged");
+    classes.push(CSS_CLASSES.TILE_MERGED);
     this.applyClasses(wrapper, classes);
-
-    // Render the tiles that merged
-    tile.mergedFrom.forEach(function (merged) {
-      self.addTile(merged);
-    });
+    
+    // Render merged tiles
+    tile.mergedFrom.forEach(merged => self.addTile(merged));
   } else {
-    classes.push("tile-new");
+    classes.push(CSS_CLASSES.TILE_NEW);
     this.applyClasses(wrapper, classes);
   }
 
-  // Add the inner part of the tile to the wrapper
   wrapper.appendChild(inner);
-
-  // Put the tile on the board
   this.tileContainer.appendChild(wrapper);
 };
 
@@ -105,17 +102,15 @@ HTMLActuator.prototype.positionClass = function (position) {
 
 HTMLActuator.prototype.updateScore = function (score) {
   this.clearContainer(this.scoreContainer);
-
-  var difference = score - this.score;
+  
+  const difference = score - this.score;
   this.score = score;
-
   this.scoreContainer.textContent = this.score;
 
   if (difference > 0) {
-    var addition = document.createElement("div");
-    addition.classList.add("score-addition");
-    addition.textContent = "+" + difference;
-
+    const addition = document.createElement('div');
+    addition.classList.add(CSS_CLASSES.SCORE_ADDITION);
+    addition.textContent = `+${difference}`;
     this.scoreContainer.appendChild(addition);
   }
 };
@@ -125,15 +120,16 @@ HTMLActuator.prototype.updateBestScore = function (bestScore) {
 };
 
 HTMLActuator.prototype.message = function (won) {
-  var type    = won ? "game-won" : "game-over";
-  var message = won ? "You win!" : "Game over!";
+  const type = won ? CSS_CLASSES.GAME_WON : CSS_CLASSES.GAME_OVER;
+  const message = won ? 'You win!' : 'Game over!';
 
   this.messageContainer.classList.add(type);
-  this.messageContainer.getElementsByTagName("p")[0].textContent = message;
+  const messageElement = this.messageContainer.querySelector('p');
+  if (messageElement) {
+    messageElement.textContent = message;
+  }
 };
 
 HTMLActuator.prototype.clearMessage = function () {
-  // IE only takes one value to remove at a time.
-  this.messageContainer.classList.remove("game-won");
-  this.messageContainer.classList.remove("game-over");
+  this.messageContainer.classList.remove(CSS_CLASSES.GAME_WON, CSS_CLASSES.GAME_OVER);
 };
