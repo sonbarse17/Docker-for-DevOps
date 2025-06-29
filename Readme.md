@@ -1,28 +1,27 @@
 # Docker for DevOps Projects Collection 🐳
 
-A comprehensive collection of containerized applications demonstrating various technology stacks and DevOps practices.
+A comprehensive collection of containerized applications with modern UIs demonstrating various technology stacks and DevOps practices.
 
 ## 📁 Project Structure
 
 ```
 Docker-for-DevOps/
-├── 2048-game/               # Browser-based 2048 game
-├── 9.0/                     # Android Calculator App
-├── flask-app/               # Python Flask Web Application
-├── go-backend-app/          # Go Backend Service
-├── java-quotes-app/         # Java Quote Service
-├── microservices-app/       # Microservices Architecture Demo
-├── my-rails-app/            # Ruby on Rails Application
-├── my-vue-express-app/      # Vue.js & Express.js Full Stack App
-├── nginx-project-1/         # Static Website with Nginx
-├── node-todo/              # Node.js Todo Application
-├── nodejs/                 # Express.js DevOps Demo
-├── python-project-2/       # Python Application
-├── simple-nodejs-people-info-app/ # Node.js People Info App
-├── simple-php-project/     # PHP Web Application
+├── python-flask-web/        # Python Flask Web App with UI
+├── go-rest-api/            # Go REST API with Web Interface
+├── java-quotes-server/     # Java HTTP Server with Quotes API
+├── nodejs-todo-app/        # Node.js Todo App with EJS Views
+├── nodejs-simple-web/      # Node.js Simple Web with Modern UI
+├── python-flask-api/       # Python Flask API Server
+├── php-web-app/           # PHP Web App with Dashboard UI
+├── nodejs-user-manager/    # Node.js + MongoDB User Manager
+├── nodejs-wiki-info/       # Node.js Wikipedia Info App
+├── html-2048-game/         # HTML5 2048 Puzzle Game
+├── nginx-static-site/      # Nginx Static Website
+├── vue-express-fullstack/  # Vue.js + Express Full Stack
+├── ruby-rails-web/         # Ruby on Rails Web App
+├── nodejs-microservices/   # Node.js Microservices Demo
 ├── spring_boot_bankapp/    # Spring Boot Banking App
-├── test-app/              # Docker Test Application
-└── wanderlust/            # Travel Application
+└── wanderlust/            # Travel Blog Application
 ```
 
 ## 🚀 Technology Stacks
@@ -70,34 +69,55 @@ Docker-for-DevOps/
 
 ## 🎯 Key Features
 
-- Multiple technology stack demonstrations
-- Containerized applications
-- Microservices architecture
-- Full-stack applications
-- RESTful APIs
-- Database integrations
-- Frontend frameworks
-- Development best practices
+- **Modern UIs**: All projects include responsive web interfaces
+- **Individual Deployment**: Each project deploys independently
+- **Multiple Tech Stacks**: 14+ different technology demonstrations
+- **Containerized Apps**: Docker-ready with optimized Dockerfiles
+- **RESTful APIs**: Backend services with API endpoints
+- **Database Integration**: MongoDB, MySQL, Redis support
+- **Microservices**: Distributed architecture examples
+- **Full-Stack Apps**: Complete frontend + backend solutions
 
-## 🔧 Prerequisites
+## 🚀 Quick Start
 
-- Docker
-- Docker Compose
-- Git
-- Programming language runtimes (as needed)
-- Package managers (npm, pip, etc.)
-- Code editor (VS Code recommended)
+### Prerequisites
+- Docker installed
+- Git (optional)
 
-## 📚 Learning Objectives
+### Individual Project Deployment
+```bash
+# Example: Deploy Python Flask Web App
+docker build -t python-flask-web ./python-flask-web
+docker run -p 5000:5000 python-flask-web
 
-- ✅ Docker containerization
-- ✅ Multi-container applications
-- ✅ Database integration
-- ✅ Web development
-- ✅ API design
-- ✅ DevOps practices
-- ✅ Microservices architecture
-- ✅ Full-stack development
+# Example: Deploy Go REST API
+docker build -t go-rest-api ./go-rest-api
+docker run -p 8080:8080 go-rest-api
+```
+
+### Available Projects & Ports
+| Project | Port | Technology | UI |
+|---------|------|------------|----|
+| python-flask-web | 5000 | Python Flask | ✓ |
+| go-rest-api | 8080 | Go HTTP | ✓ |
+| java-quotes-server | 8000 | Java | ✓ |
+| nodejs-todo-app | 8000 | Node.js | ✓ |
+| nodejs-simple-web | 3000 | Node.js | ✓ |
+| python-flask-api | 9001 | Python | ✓ |
+| php-web-app | 8080 | PHP | ✓ |
+| nodejs-user-manager | 3000 | Node.js + MongoDB | ✓ |
+| nodejs-wiki-info | 3000 | Node.js | ✓ |
+| html-2048-game | 80 | HTML5 | ✓ |
+| nginx-static-site | 80 | Nginx | ✓ |
+
+## 📚 What You'll Learn
+
+- **Docker Fundamentals**: Containerization, Dockerfiles, image building
+- **Web Development**: Frontend UIs, backend APIs, full-stack apps
+- **Multiple Languages**: Python, Go, Java, Node.js, PHP, Ruby
+- **Database Integration**: MongoDB, MySQL, Redis connections
+- **DevOps Practices**: Individual deployment, container orchestration
+- **Modern UI/UX**: Responsive designs, interactive interfaces
 
 ## 📄 License
 
@@ -110,3 +130,6 @@ For support and questions, please open an issue in the respective project reposi
 ---
 
 **Happy Containerizing! 🐳✨**
+
+---
+**Created by Sushant Sonbarse** | [GitHub](https://github.com/sonbarse17/)
