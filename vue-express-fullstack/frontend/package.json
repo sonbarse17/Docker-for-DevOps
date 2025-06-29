@@ -1,0 +1,21 @@
+{
+  "name": "my-vue-express-app",
+  "version": "1.0.0",
+  "description": "A Vue.js frontend with an Express.js backend",
+  "author": "Your Name",
+  "license": "MIT",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "lint": "vue-cli-service lint"
+  },
+  "dependencies": {
+    "vue": "^3.3.8",
+    "vue-router": "^4.2.5",
+    "axios": "^1.6.2"
+  },
+  "devDependencies": {
+    "@vue/cli-service": "^4.5.0",
+    "@vue/compiler-sfc": "^3.0.0"
+  }
+}
