@@ -1,35 +1,41 @@
-import express from 'express';
-import { createClient } from 'redis';
+import { Request, Response } from 'express';
+import { BaseService } from './shared/base-service';
 
-const app = express();
-const port = process.env.PORT || 3000;
-const redisClient = createClient();
+class TodoService extends BaseService {
+  constructor() {
+    const config = {
+      serviceName: 'service8',
+      port: parseInt(process.env.PORT || '5000'),
+      redisUrl: `redis://${process.env.REDIS_HOST || 'localhost'}:6379`
+    };
+    super(config);
+    this.setupTodoRoutes();
+  }
 
-redisClient.on('error', (err) => {
-    console.error('Redis Client Error', err);
-});
+  private setupTodoRoutes(): void {
+    this.app.get('/todos', this.getTodos.bind(this));
+    this.app.post('/todos', this.validateTodo, this.addTodo.bind(this));
+  }
 
-app.use(express.json());
-
-app.get('/api/service8/data', async (req, res) => {
+  private async getTodos(req: Request, res: Response): Promise<void> {
     try {
-        const data = await redisClient.get('service8Data');
-        res.status(200).json({ data });
+      const todos = await this.redisClient.lRange('todos', 0, -1);
+      res.json({ todos, count: todos.length });
     } catch (error) {
-        res.status(500).json({ error: 'Error fetching data' });
+      await this.handleError(error, res, 'retrieve todos');
     }
-});
+  }
 
-app.post('/api/service8/data', async (req, res) => {
-    const { data } = req.body;
+  private async addTodo(req: Request, res: Response): Promise<void> {
+    const { todo } = req.body;
     try {
-        await redisClient.set('service8Data', data);
-        res.status(201).json({ message: 'Data saved successfully' });
+      await this.redisClient.rPush('todos', todo.trim());
+      res.status(201).json({ message: 'Todo added successfully', todo: todo.trim() });
     } catch (error) {
-        res.status(500).json({ error: 'Error saving data' });
+      await this.handleError(error, res, 'add todo');
     }
-});
+  }
+}
 
-app.listen(port, () => {
-    console.log(`Service 8 running on http://localhost:${port}`);
-});
+const service = new TodoService();
+service.start();

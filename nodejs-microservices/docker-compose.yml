@@ -8,16 +8,17 @@ services:
     ports:
       - "3000:3000"
     depends_on:
-      - service1
-      - service2
-      - service3
-      - service4
-      - service5
-      - service6
-      - service7
-      - service8
-      - service9
-      - service10
+      redis:
+        condition: service_healthy
+      service1:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+    restart: unless-stopped
 
   service1:
     build:
@@ -27,6 +28,23 @@ services:
       - "5001:5000"
     environment:
       - REDIS_HOST=redis
+      - NODE_ENV=production
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   service2:
     build:
@@ -36,6 +54,231 @@ services:
       - "5002:5000"
     environment:
       - REDIS_HOST=redis
+      - NODE_ENV=production
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  service3:
+    build:
+      context: ./services/service3
+      dockerfile: Dockerfile
+    ports:
+      - "5003:5000"
+    environment:
+      - REDIS_HOST=redis
+      - NODE_ENV=production
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  service4:
+    build:
+      context: ./services/service4
+      dockerfile: Dockerfile
+    ports:
+      - "5004:5000"
+    environment:
+      - REDIS_HOST=redis
+      - NODE_ENV=production
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  service5:
+    build:
+      context: ./services/service5
+      dockerfile: Dockerfile
+    ports:
+      - "5005:5000"
+    environment:
+      - REDIS_HOST=redis
+      - NODE_ENV=production
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  service6:
+    build:
+      context: ./services/service6
+      dockerfile: Dockerfile
+    ports:
+      - "5006:5000"
+    environment:
+      - REDIS_HOST=redis
+      - NODE_ENV=production
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  service7:
+    build:
+      context: ./services/service7
+      dockerfile: Dockerfile
+    ports:
+      - "5007:5000"
+    environment:
+      - REDIS_HOST=redis
+      - NODE_ENV=production
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  service8:
+    build:
+      context: ./services/service8
+      dockerfile: Dockerfile
+    ports:
+      - "5008:5000"
+    environment:
+      - REDIS_HOST=redis
+      - NODE_ENV=production
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  service9:
+    build:
+      context: ./services/service9
+      dockerfile: Dockerfile
+    ports:
+      - "5009:5000"
+    environment:
+      - REDIS_HOST=redis
+      - NODE_ENV=production
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  service10:
+    build:
+      context: ./services/service10
+      dockerfile: Dockerfile
+    ports:
+      - "5010:5000"
+    environment:
+      - REDIS_HOST=redis
+      - NODE_ENV=production
+    depends_on:
+      redis:
+        condition: service_healthy
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
   service3:
     build:
@@ -110,13 +353,30 @@ services:
       - REDIS_HOST=redis
 
   redis:
-    image: "redis:alpine"
+    image: "redis:7-alpine"
     ports:
       - "6379:6379"
+    volumes:
+      - redis_data:/data
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 128M
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    command: redis-server --appendonly yes --maxmemory 200mb --maxmemory-policy allkeys-lru
 
 networks:
   default:
     driver: bridge
+    name: microservices-network
 
 volumes:
   redis_data:
