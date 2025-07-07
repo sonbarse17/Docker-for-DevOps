@@ -96,19 +96,22 @@ docker run -p 8080:8080 go-rest-api
 ```
 
 ### Available Projects & Ports
-| Project | Port | Technology | UI |
-|---------|------|------------|----|
-| python-flask-web | 5000 | Python Flask | ✓ |
-| go-rest-api | 8080 | Go HTTP | ✓ |
-| java-quotes-server | 8000 | Java | ✓ |
-| nodejs-todo-app | 8000 | Node.js | ✓ |
-| nodejs-simple-web | 3000 | Node.js | ✓ |
-| python-flask-api | 9001 | Python | ✓ |
-| php-web-app | 8080 | PHP | ✓ |
-| nodejs-user-manager | 3000 | Node.js + MongoDB | ✓ |
-| nodejs-wiki-info | 3000 | Node.js | ✓ |
-| html-2048-game | 80 | HTML5 | ✓ |
-| nginx-static-site | 80 | Nginx | ✓ |
+| Project | Port | Technology | UI | Database |
+|---------|------|------------|----|---------|
+| python-flask-web | 5000 | Python Flask | ✓ | - |
+| go-rest-api | 8080 | Go HTTP | ✓ | - |
+| java-quotes-server | 8000 | Java | ✓ | File |
+| nodejs-todo-app | 8000 | Node.js + EJS | ✓ | Memory |
+| nodejs-simple-web | 3000 | Node.js | ✓ | - |
+| python-flask-api | 9001 | Python Flask | ✓ | - |
+| php-web-app | 8080 | PHP + Apache | ✓ | MySQL |
+| nodejs-user-manager | 3000 | Node.js + MongoDB | ✓ | MongoDB |
+| nodejs-wiki-info | 3000 | Node.js + API | ✓ | Wikipedia |
+| html-2048-game | 80 | HTML5 + JS | ✓ | LocalStorage |
+| nginx-static-site | 80 | Nginx | ✓ | - |
+| vue-express-fullstack | 3000/8080 | Vue + Express | ✓ | - |
+| ruby-rails-web | 3000 | Ruby on Rails | ✓ | SQLite |
+| nodejs-microservices | 5000 | Node.js + Redis | ✓ | Redis |
 
 ## 📚 What You'll Learn
 
@@ -118,6 +121,11 @@ docker run -p 8080:8080 go-rest-api
 - **Database Integration**: MongoDB, MySQL, Redis connections
 - **DevOps Practices**: Individual deployment, container orchestration
 - **Modern UI/UX**: Responsive designs, interactive interfaces
+
+## 📄 Documentation
+
+For complete project documentation including detailed setup instructions, architecture diagrams, and best practices, see:
+- **[Complete Documentation](Docker-DevOps-Projects-Documentation.md)** - Comprehensive guide for all projects
 
 ## 📄 License
 
