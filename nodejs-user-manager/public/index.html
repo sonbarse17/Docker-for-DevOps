@@ -10,23 +10,23 @@
     <h1>Hi student, Welcome to XYZ University!</h1>
     <p>You can sign up to the platform to access all important notes & lectures.</p>
 
-    <form action="/addUser" method="POST" target="_blank" id="signupForm">
+    <form id="signupForm">
+        <div class="field">
+            <label for="name">Name: </label>
+            <input type="text" placeholder="Jane Doe" name="name" required>
+        </div>
         <div class="field">
             <label for="email">Email: </label>
-            <input type="text" placeholder="jane@email.com" name="email">
-        </div>
-        <div class="field">    
-        <label for="username">Username: </label>
-            <input type="text" placeholder="Jane Doe" name="username">
-        </div>
-        <div class="field">
-            <label for="password">Password: </label>
-            <input type="password" placeholder="password" name="password">
+            <input type="email" placeholder="jane@email.com" name="email" required>
         </div>
         
-        <button id="formBtn">Create Account</button>
+        <button type="button" id="formBtn" onclick="addUser()">Create Account</button>
         
     </form>
+    
+    <div id="userList"></div>
+    
+    <script src="script.js"></script>
 </body>
 
 </html>

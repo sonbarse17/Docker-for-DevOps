@@ -1,4 +1,7 @@
 {
+  "name": "wanderlust",
+  "version": "1.0.0",
+  "description": "A travel blog application with React frontend and Node.js backend",
   "dependencies": {
     "concurrently": "^8.2.2"
   },

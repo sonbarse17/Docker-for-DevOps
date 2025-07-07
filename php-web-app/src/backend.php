@@ -7,5 +7,6 @@ function handleRequest() {
     } else {
         echo json_encode(['status' => 'error', 'message' => 'Unknown action']);
     }
+    exit();
 }
 ?>

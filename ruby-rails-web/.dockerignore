@@ -1,0 +1,9 @@
+.git
+.gitignore
+README.md
+Dockerfile
+.dockerignore
+log/*
+tmp/*
+.byebug_history
+.DS_Store

@@ -11,6 +11,8 @@ services:
       - NODE_ENV=production
       - MONGODB_URI=mongodb://mongo:27017/wanderlust
       - REDIS_URL=redis://redis:6379
+      - CORS_ORIGIN=http://localhost:3000
+      - JWT_SECRET=wanderlust-jwt-secret-key
     depends_on:
       - mongo
       - redis

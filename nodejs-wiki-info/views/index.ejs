@@ -3,39 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple nodejs app</title>
-
-<style>
-.button {
-  background-color: #04AA6D; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-  cursor: pointer;
-}
-
-.button2 {background-color: #008CBA;} /* Blue */
-.button3 {background-color: #f44336;} /* Red */ 
-.button4 {background-color: #e7e7e7; color: black;} /* Gray */ 
-.button5 {background-color: #555555;} /* Black */
-</style>
-
+    <title>Wikipedia Info Finder</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; padding: 20px; }
+        .header { text-align: center; margin-bottom: 30px; }
+        .search-box { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .search-input { width: 70%; padding: 12px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; }
+        .search-btn { width: 25%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-left: 10px; }
+        .search-btn:hover { background: #0056b3; }
+        .type-selector { margin: 10px 0; }
+        .type-selector label { margin-right: 15px; }
+        .loading { text-align: center; color: #666; display: none; }
+        .results { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; display: none; }
+        .result-item { border-bottom: 1px solid #eee; padding: 15px 0; position: relative; }
+        .result-item:last-child { border-bottom: none; }
+        .result-title { font-size: 18px; font-weight: bold; color: #007bff; margin-bottom: 5px; }
+        .result-desc { color: #666; margin-bottom: 10px; line-height: 1.4; }
+        .result-link { color: #007bff; text-decoration: none; }
+        .result-meta { font-size: 12px; color: #999; margin-bottom: 5px; }
+        .source-badge { background: #e9ecef; padding: 2px 6px; border-radius: 3px; font-size: 11px; margin-right: 5px; }
+        .news-badge { background: #dc3545; color: white; }
+        .wiki-badge { background: #28a745; color: white; }
+        .web-badge { background: #6f42c1; color: white; }
+        .history { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .history-item { padding: 5px 0; color: #666; cursor: pointer; }
+        .history-item:hover { color: #007bff; }
+        .error { color: #dc3545; text-align: center; padding: 10px; }
+        .thumbnail { width: 80px; height: 80px; object-fit: cover; border-radius: 5px; float: right; margin-left: 15px; }
+        .search-stats { text-align: center; color: #666; margin-bottom: 15px; }
+        .trending { background: white; padding: 15px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .trending-item { display: inline-block; background: #f8f9fa; padding: 5px 10px; margin: 3px; border-radius: 15px; cursor: pointer; font-size: 14px; }
+        .trending-item:hover { background: #007bff; color: white; }
+    </style>
 </head>
 <body>
-    <form action="/index" method="GET">
-        <input type="text" name = "person" placeholder="Person's name...">
-        <input type="submit" value="Search">
-    </form>
+    <div class="container">
+        <div class="header">
+            <h1>🌍 Global Search Engine</h1>
+            <p>Search across Wikipedia, News, and Web sources</p>
+        </div>
 
-    <button class="button">Green</button>
-    <button class="button button2">Blue</button>
-    <button class="button button3">Red</button>
-    <button class="button button4">Gray</button>
-    <button class="button button5">Black</button>
+        <div class="search-box">
+            <form id="searchForm">
+                <input type="text" id="searchInput" class="search-input" placeholder="Enter search term..." required>
+                <button type="submit" class="search-btn">Search</button>
+                <div class="type-selector">
+                    <label><input type="radio" name="type" value="all" checked> All Sources</label>
+                    <label><input type="radio" name="type" value="news"> News</label>
+                    <label><input type="radio" name="type" value="encyclopedia"> Encyclopedia</label>
+                </div>
+            </form>
+        </div>
+
+        <div class="trending" id="trending">
+            <h4>🔥 Trending Searches</h4>
+            <div id="trendingItems"></div>
+        </div>
+
+        <div class="loading" id="loading">🌐 Searching across multiple sources...</div>
+        <div class="error" id="error" style="display: none;"></div>
+        <div class="search-stats" id="searchStats" style="display: none;"></div>
+        <div class="results" id="results"></div>
+
+        <% if (history && history.length > 0) { %>
+        <div class="history">
+            <h3>Recent Searches</h3>
+            <% history.forEach(item => { %>
+                <div class="history-item" onclick="searchAgain('<%= item.query %>', '<%= item.type %>')">
+                    <%= item.query %> (<%= item.type %>)
+                </div>
+            <% }); %>
+        </div>
+        <% } %>
+    </div>
+
+    <script>
+        // Load trending searches on page load
+        window.addEventListener('load', loadTrending);
+        
+        document.getElementById('searchForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const query = document.getElementById('searchInput').value;
+            const type = document.querySelector('input[name="type"]:checked').value;
+            await performSearch(query, type);
+        });
+        
+        async function loadTrending() {
+            try {
+                const response = await fetch('/trending');
+                const trending = await response.json();
+                const container = document.getElementById('trendingItems');
+                container.innerHTML = trending.map(item => 
+                    `<span class="trending-item" onclick="quickSearch('${item}')">${item}</span>`
+                ).join('');
+            } catch (err) {
+                console.log('Could not load trending');
+            }
+        }
+        
+        function quickSearch(query) {
+            document.getElementById('searchInput').value = query;
+            performSearch(query, 'all');
+        }
+
+        async function performSearch(query, type) {
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const results = document.getElementById('results');
+
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            results.style.display = 'none';
+
+            try {
+                const response = await fetch(`/search?q=${encodeURIComponent(query)}&type=${type}`);
+                const data = await response.json();
+
+                if (!response.ok) throw new Error(data.error);
+
+                displayResults(data);
+                setTimeout(() => location.reload(), 2000); // Refresh to show updated history
+            } catch (err) {
+                error.textContent = err.message;
+                error.style.display = 'block';
+            } finally {
+                loading.style.display = 'none';
+            }
+        }
+
+        function displayResults(data) {
+            const results = document.getElementById('results');
+            const searchStats = document.getElementById('searchStats');
+            
+            searchStats.innerHTML = `Found ${data.totalResults} results from ${data.sources.join(', ')}`;
+            searchStats.style.display = 'block';
+            
+            let html = '';
+            data.results.forEach(result => {
+                const badgeClass = result.type === 'news' ? 'news-badge' : 
+                                 result.source === 'Wikipedia' ? 'wiki-badge' : 'web-badge';
+                
+                html += `
+                    <div class="result-item">
+                        ${result.thumbnail ? `<img src="${result.thumbnail}" class="thumbnail" alt="${result.title}">` : ''}
+                        <div class="result-meta">
+                            <span class="source-badge ${badgeClass}">${result.source}</span>
+                            ${result.publishedAt ? `<span>${new Date(result.publishedAt).toLocaleDateString()}</span>` : ''}
+                        </div>
+                        <div class="result-title">${result.title}</div>
+                        <div class="result-desc">${result.description || ''}</div>
+                        <a href="${result.url}" target="_blank" class="result-link">${result.url} →</a>
+                    </div>
+                `;
+            });
+
+            results.innerHTML = html;
+            results.style.display = 'block';
+        }
+
+        function searchAgain(query, type) {
+            document.getElementById('searchInput').value = query;
+            document.querySelector(`input[value="${type}"]`).checked = true;
+            performSearch(query, type);
+        }
+    </script>
 </body>
 </html>

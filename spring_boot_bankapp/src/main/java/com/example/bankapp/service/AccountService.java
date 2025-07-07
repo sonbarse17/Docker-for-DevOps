@@ -49,6 +49,9 @@ public class AccountService implements UserDetailsService {
 
 
     public void deposit(Account account, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Deposit amount must be positive");
+        }
         account.setBalance(account.getBalance().add(amount));
         accountRepository.save(account);
 
@@ -62,6 +65,9 @@ public class AccountService implements UserDetailsService {
     }
 
     public void withdraw(Account account, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Withdrawal amount must be positive");
+        }
         if (account.getBalance().compareTo(amount) < 0) {
             throw new RuntimeException("Insufficient funds");
         }
@@ -101,6 +107,15 @@ public class AccountService implements UserDetailsService {
     }
 
     public void transferAmount(Account fromAccount, String toUsername, BigDecimal amount) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new RuntimeException("Transfer amount must be positive");
+        }
+        if (toUsername == null || toUsername.trim().isEmpty()) {
+            throw new RuntimeException("Recipient username cannot be empty");
+        }
+        if (fromAccount.getUsername().equals(toUsername)) {
+            throw new RuntimeException("Cannot transfer to yourself");
+        }
         if (fromAccount.getBalance().compareTo(amount) < 0) {
             throw new RuntimeException("Insufficient funds");
         }

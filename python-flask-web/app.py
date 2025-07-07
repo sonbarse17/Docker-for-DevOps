@@ -1,10 +1,10 @@
-from flask import Flask
+from flask import Flask, render_template
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello Dosto, welcome to My Repositoy! This is a Flask app. Enjoy! Created by Sushant Sonbarse'
+    return render_template('index.html')
 
 @app.route('/health')
 def health():
-    return 'Server is up and running'
+    return render_template('health.html')

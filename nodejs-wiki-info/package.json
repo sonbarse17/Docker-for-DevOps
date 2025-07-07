@@ -1,10 +1,11 @@
 {
-  "name": "simple-nodejs-app",
-  "version": "1.0.0",
-  "description": "Research about a person",
+  "name": "global-search-engine",
+  "version": "3.0.0",
+  "description": "Global search engine aggregating results from Wikipedia, News, and Web sources",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

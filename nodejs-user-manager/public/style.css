@@ -23,3 +23,14 @@ form {
 .field {
     margin-bottom: 0.5rem;
 }
+
+#userList {
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.5rem;
+    background-color: #f9f9f9;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
