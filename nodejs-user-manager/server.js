@@ -13,7 +13,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-const MONGO_URL = process.env.MONGODB_URI || "mongodb://localhost:27017/userdb";
+const MONGO_URL = process.env.MONGODB_URI || "mongodb://mongo-service:27017/userdb";
 const client = new MongoClient(MONGO_URL);
 
 //GET all users
