@@ -6,4 +6,4 @@ COPY . .
 
 EXPOSE 8080
 
-ENTRYPOINT ["go", "run" "cmd/main.go"]
+ENTRYPOINT ["go", "run", "cmd/main.go"]
